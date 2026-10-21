@@ -1,0 +1,1392 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Módulo práctico 4 · OpenSpec + SDD</title><style>body{margin:0;background:#eef3f8;color:#132333;font:16px/1.65 system-ui,sans-serif}header{background:#101c2c;color:#dce8f5;padding:1rem 1.5rem;position:sticky;top:0}header span{color:#9db5ca;font:12px monospace;margin-left:.75rem}nav{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.7rem}nav a{color:#dce8f5;background:#182b40;border:1px solid #31506b;border-radius:4px;padding:.35rem .6rem;text-decoration:none;font-size:.85rem}main{max-width:900px;margin:2rem auto;padding:0 1.25rem 3rem}article{background:#fff;border:1px solid #cbd7e2;border-radius:8px;padding:2rem}pre{overflow:auto;background:#122132;color:#d9edff;border-radius:5px;padding:1rem}code{font-family:ui-monospace,Consolas,monospace}blockquote{border-left:4px solid #007f6e;padding:.25rem 1rem;color:#52677a;background:#eff9f7}table{width:100%;border-collapse:collapse}th,td{border:1px solid #cbd7e2;padding:.5rem}a{color:#1464a5}pre code{background:transparent!important;color:inherit!important;padding:0!important;border-radius:0!important}</style><script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script></head><body><header><strong>Módulo práctico 4 · OpenSpec + SDD</strong><span id="file-name"></span><nav><a href="?file=README.md">Guía del módulo</a><a href="?file=STEP_0_OPENSPEC.md">Paso 0</a><a href="?file=STEP_1_SPEC.md">Paso 1</a><a href="?file=STEP_2_ARCHITECTURE.md">Paso 2</a><a href="?file=STEP_3_CHARACTERIZATION.md">Paso 3</a><a href="?file=STEP_4_IMPLEMENT.md">Paso 4</a><a href="?file=STEP_5_PR_CI.md">Paso 5</a><a href="?file=GITHUB_COPILOT_AGENTS.md">GitHub Agents</a><a href="../laboratory-guide.html">← Guía del Día 3</a></nav></header><main><article id="content">Cargando documento...</article></main><script type="text/plain" id="doc-README.md"># Módulo práctico integrador - SDD con OpenSpec sobre `workshop-requirements-api`
+
+> Este módulo materializa principalmente **S1 - OpenSpec / Spec Kit + Constitution**, **S2 - Specify -> Plan -> Tasks -> Validate** y los gates/evaluators de **S4 - routing, evaluator, HITL**.
+
+## Objetivo
+
+Demostrar un ciclo completo de Spec Driven Development sobre un sistema existente usando OpenSpec como implementación concreta y manteniendo GitHub como sistema de trabajo, trazabilidad e integración.
+
+Repositorio guiado:
+
+```text
+<OWNER>/workshop-requirements-api
+```
+
+VS Code permanece abierto sobre `reqflow-workspace`, pero todos los prompts operativos de este módulo delimitan explícitamente el trabajo a `workshop-requirements-api`.
+
+## Relación con S1
+
+OpenSpec es la implementación SDD usada en el laboratorio.
+
+Spec Kit y Constitution forman parte de la comparación conceptual de S1; no ejecutamos un segundo flujo paralelo sobre el mismo cambio.
+
+## Relación con S2
+
+Patrón del temario:
+
+```text
+Specify -> Plan -> Tasks -> Validate
+```
+
+Materialización principal:
+
+```text
+Specify
+  -> proposal.md + specs/
+
+Plan
+  -> design.md
+
+Tasks
+  -> tasks.md
+
+Validate
+  -> openspec validate + revisión humana + tests
+
+Apply
+  -> implementar las tareas aprobadas
+```
+
+## Decisión del laboratorio
+
+Usamos el schema estándar de OpenSpec:
+
+```text
+proposal -> specs -> design -> tasks -> apply
+```
+
+Y mantenemos GitHub en paralelo:
+
+```text
+GitHub Issue   -> unidad de trabajo y trazabilidad
+GitHub Project -> prioridad
+branch         -> rama del Issue
+PR             -> revisión e integración
+checks         -> evidencia automática
+```
+
+`tasks.md` y GitHub Issue pueden solaparse parcialmente. Durante el taller esa duplicación es intencional.
+
+## Preparación
+
+Antes del flujo del Issue:
+
+1. instala OpenSpec CLI;
+2. inicializa OpenSpec en `workshop-requirements-api` seleccionando GitHub Copilot;
+3. conserva el schema estándar `spec-driven`;
+4. configura el contexto y reglas del laboratorio;
+5. trabaja desde `reqflow-workspace`, manteniendo el alcance operativo en el repositorio API.
+
+Consulta [Paso 0 - Preparar OpenSpec](STEP_0_OPENSPEC.md).
+
+## Flujo
+
+```text
+Issue confirmado y priorizado
+ -> rama del Issue
+ -> proposal + specs              [Specify]
+ -> GATE HUMANO
+ -> design                        [Plan]
+ -> GATE HUMANO
+ -> tasks.md                      [Tasks]
+ -> GATE HUMANO
+ -> openspec validate
+ -> characterization tests        [Validate baseline]
+ -> OpenSpec apply
+ -> implementación incremental
+ -> tests / evaluators            [Validate change]
+ -> PR final rama del Issue -> main
+ -> GitHub checks
+ -> Definition of Done
+ -> GATE HUMANO de cierre
+```
+
+No se crean PRs internos `copilot/*` en el recorrido principal de VS Code.
+
+## Routing, evaluator y HITL dentro del módulo
+
+### Routing
+
+```text
+PM/PO     -> necesidad, alcance, proposal/specs
+Architect -> design/tasks
+Developer -> characterization, apply e implementación
+```
+
+### Evaluator
+
+```text
+openspec validate
+tests
+diff
+Definition of Done
+GitHub checks
+```
+
+### HITL
+
+El participante revisa y decide antes de aceptar cada artefacto relevante y antes de integrar el cambio.
+
+## Pasos
+
+0. [Preparar OpenSpec](STEP_0_OPENSPEC.md)
+1. [Crear proposal y specs desde el Issue](STEP_1_SPEC.md)
+2. [Crear design y tasks](STEP_2_ARCHITECTURE.md)
+3. [Proteger el comportamiento](STEP_3_CHARACTERIZATION.md)
+4. [Implementar con OpenSpec apply](STEP_4_IMPLEMENT.md)
+5. [Preparar PR final y revisar quality gates](STEP_5_PR_CI.md)
+
+## Ejecución alternativa desde GitHub Copilot Agents
+
+El recorrido principal continúa validado desde VS Code sobre `reqflow-workspace`.
+
+Como complemento, determinadas tareas pueden ejecutarse desde GitHub Copilot Agents cuando los Custom Agents, Skills y configuración requerida ya están versionados y disponibles para GitHub. Esa ruta puede tener reglas distintas de ramas/sesiones y se documenta separadamente.
+
+Consulta [Ejecución alternativa desde GitHub Copilot Agents](GITHUB_COPILOT_AGENTS.md).
+
+## Personalización al final del día
+
+Después de completar el flujo estándar, revisamos `templates/openspec/schemas/reqflow-github/` como ejemplo opcional de personalización. Ese schema elimina `tasks.md` y deja el tracking en GitHub Issues.
+
+La personalización cambia el proceso y los artefactos de OpenSpec; no cambia la funcionalidad de ReqFlow.
+
+## Criterio de salida
+
+El participante puede mostrar:
+
+```text
+Specify
+-> Plan
+-> Tasks
+-> Validate
+-> Apply
+-> Validate
+-> PR / checks
+```
+
+sobre un Issue real de ReqFlow, y puede identificar dónde aparecen routing, evaluator y HITL en el recorrido.
+</script>
+<script type="text/plain" id="doc-STEP_0_OPENSPEC.md"># Paso 0 - Preparar OpenSpec para ReqFlow
+
+## Objetivo
+
+Instalar e inicializar OpenSpec en `workshop-requirements-api`, conservar el schema estándar `spec-driven` y dejar sus workflows disponibles para GitHub Copilot antes de iniciar el SDD guiado.
+
+## 0.1 Prerrequisito
+
+OpenSpec es una CLI basada en Node.js. Verifica:
+
+```powershell
+node --version
+```
+
+Se requiere Node.js 20.19.0 o superior.
+
+## 0.2 Instalar OpenSpec CLI
+
+```powershell
+npm install -g @fission-ai/openspec@latest
+openspec --version
+```
+
+## 0.3 Inicializar el repositorio
+
+Desde la raíz de `workshop-requirements-api`:
+
+```powershell
+openspec init
+```
+
+En el selector interactivo, elige **GitHub Copilot** como herramienta de IA utilizada por el laboratorio.
+
+OpenSpec crea su estructura de trabajo y los workflows/skills correspondientes a la herramienta seleccionada. Reinicia o refresca el host si OpenSpec lo solicita.
+
+> No reemplaces a ciegas `openspec/config.yaml`: `openspec init` puede guardar allí configuración generada para la herramienta seleccionada. Conserva esa configuración y agrega únicamente el contexto/reglas del laboratorio que necesites.
+
+## 0.4 Confirmar el schema estándar
+
+El recorrido principal del Día 3 utiliza:
+
+```text
+spec-driven
+```
+
+Su flujo esperado es:
+
+```text
+proposal -> specs -> design -> tasks -> apply
+```
+
+No instales ni actives `reqflow-github` durante el recorrido principal. Ese schema se conserva en `templates/openspec/schemas/reqflow-github/` únicamente como ejemplo opcional de personalización para el cierre del día.
+
+## 0.5 Configurar contexto ReqFlow
+
+Usa `templates/openspec/config.yaml.example` como referencia para incorporar el contexto y reglas del laboratorio al `openspec/config.yaml` generado, **sin borrar propiedades que haya creado `openspec init`**.
+
+La configuración debe mantener `schema: spec-driven` y recordar, entre otras cosas, que:
+
+- el cambio parte de un GitHub Issue confirmado;
+- deben preservarse contratos HTTP fuera del alcance aprobado;
+- no se resuelve deuda adicional;
+- los artefactos se escriben en español;
+- `tasks.md` debe ser coherente con Issue, proposal, specs y design.
+
+## 0.6 Verificar el flujo completo
+
+El participante debe poder explicar que OpenSpec materializará, para un cambio:
+
+```text
+proposal.md
+specs/
+design.md
+tasks.md
+```
+
+y que posteriormente `apply` utilizará esos artefactos para ejecutar el cambio.
+
+En paralelo:
+
+```text
+GitHub Issue = trabajo comprometido y trazabilidad del producto
+tasks.md      = checklist de implementación dentro del cambio OpenSpec
+```
+
+## 0.7 Publicar la configuración antes de usar cloud agent
+
+La configuración de OpenSpec y los workflows instalados deben estar versionados y disponibles en el repositorio que utilizará GitHub Copilot cloud agent.
+
+Antes del Paso 1 confirma que `main` contiene, como mínimo:
+
+```text
+.github/agents/
+.github/skills/
+openspec/config.yaml
+```
+
+además de los archivos de integración generados por `openspec init` para GitHub Copilot.
+
+En `s01` y `s02` copiaste agents y skills a la raíz de `reqflow-workspace/`. Cópialos ahora al repo, junto a los Skills del Día 2 que ya están ahí:
+
+```powershell
+# Desde reqflow-workspace/
+Copy-Item -Recurse -Force .github\agents workshop-requirements-api\.github\
+Copy-Item -Recurse -Force .github\skills\* workshop-requirements-api\.github\skills\
+```
+
+> Revisa el diff de `openspec init` y conserva únicamente archivos cuyo propósito comprendas.
+
+## 0.8 Comprobación
+
+Ejecuta:
+
+```powershell
+openspec list
+```
+
+En este punto puede no existir todavía ningún cambio activo. Lo importante es que la CLI reconozca el proyecto y su configuración.
+
+## Criterio de salida
+
+Puede demostrarse que:
+
+- OpenSpec está instalado;
+- `workshop-requirements-api` está inicializado;
+- GitHub Copilot fue seleccionado como herramienta;
+- el recorrido principal usa el schema estándar `spec-driven`;
+- el flujo incluye `proposal`, `specs`, `design`, `tasks` y `apply`;
+- GitHub Issues continúan formando parte del proceso.
+</script>
+<script type="text/plain" id="doc-STEP_1_SPEC.md"># Paso 1 - Crear proposal y specs desde el GitHub Issue
+
+## Objetivo
+
+Transformar un GitHub Issue confirmado en artefactos OpenSpec que definan por qué se hace el cambio y qué comportamiento debe preservarse o modificarse.
+
+## Precondición
+
+Antes de comenzar este paso debe existir un GitHub Issue de `workshop-requirements-api` seleccionado para el recorrido guiado.
+
+Ese Issue se crea durante el Discovery y backlog del módulo anterior, en [S03 - Paso 4: Discovery y backlog multi-repo](../s03-reqflow-setup/STEP_4_DISCOVERY_BACKLOG.md):
+
+- **4.5** Crear issues a partir de hallazgos CONFIRMADOS;
+- **4.6** agregar los issues al Project ReqFlow;
+- **4.7** elegir un issue de `workshop-requirements-api` para el recorrido guiado de S4.
+
+El Issue seleccionado debe corresponder a un hallazgo **CONFIRMADO** y será la fuente de alcance y trazabilidad para todo el flujo SDD de este módulo.
+
+## 1.1 Preparar la rama del Issue
+
+Usa el Issue seleccionado en S3 para crear una rama de desarrollo **vinculada al Issue y dejarla activa localmente**.
+
+Desde `reqflow-workspace`:
+
+```powershell
+cd workshop-requirements-api
+
+gh issue develop <ISSUE_NUMBER> --checkout --base main --name <BRANCH_DEL_ISSUE>
+```
+
+Por ejemplo:
+
+```powershell
+gh issue develop 9 --checkout --base main --name feature/issue-9-auth-legacy-base64
+```
+
+Este comando realiza en una sola operación el flujo que necesitamos:
+
+```text
+GitHub Issue
+ -> crea rama vinculada al Issue
+ -> publica/configura la rama de desarrollo
+ -> checkout local
+```
+
+Verifica únicamente que quedaste sobre la rama esperada:
+
+```powershell
+git branch --show-current
+```
+
+El resultado debe ser exactamente `<BRANCH_DEL_ISSUE>`.
+
+> Si ya creaste la rama desde la sección **Development** del Issue en GitHub, no crees otra. En ese caso basta con sincronizarla y cambiar a ella:
+>
+> ```powershell
+> git fetch origin
+> git switch <BRANCH_DEL_ISSUE>
+> ```
+
+Esa rama será la rama del Issue utilizada durante todo el recorrido principal de S4.
+
+Para S4 mantén VS Code abierto desde `reqflow-workspace` para conservar el MCP configurado a nivel workspace. Aunque el workspace contiene varios repositorios, todos los prompts y operaciones de este laboratorio deben limitarse explícitamente a `workshop-requirements-api`.
+
+## 1.2 Qué debe producir OpenSpec
+
+Para este paso esperamos:
+
+```text
+openspec/changes/<change-name>/
+├─ .openspec.yaml
+├─ proposal.md
+└─ specs/
+   └─ <capability>/
+      └─ spec.md
+```
+
+Todavía no queremos design, tasks ni implementación.
+
+## 1.3 Prompt recomendado
+
+En GitHub Copilot Chat de VS Code, abre el selector **Agent** y elige:
+
+```text
+PM/PO
+```
+
+Prompt sugerido:
+
+```text
+Trabaja únicamente en workshop-requirements-api.
+No leas ni modifiques los otros repositorios del workspace.
+
+Trabaja sobre la rama actual.
+No crees ni cambies de rama.
+
+Usa github-official para consultar el GitHub Issue #<ISSUE_NUMBER>
+y úsalo como fuente del trabajo comprometido y del alcance.
+
+Trabaja con OpenSpec y el schema estándar spec-driven configurado en este repositorio.
+
+Usa github-official para consultar el Issue y úsalo como fuente del trabajo comprometido y del alcance.
+Usa docs/ENDPOINTS.md (contrato documentado el Dia 1) como baseline del comportamiento que debe preservarse: los escenarios de las specs deben ser coherentes con ese contrato, o explicar por que el Issue lo cambia.
+
+Crea una propuesta OpenSpec para este cambio y materializa:
+- proposal.md;
+- las specs necesarias bajo openspec/changes/<change>/specs/.
+
+La propuesta debe:
+- referenciar el Issue;
+- explicar por qué importa el cambio;
+- separar alcance y fuera de alcance;
+- identificar comportamiento que debe preservarse;
+- definir requisitos verificables y escenarios observables.
+
+No diseñes todavía la implementación técnica.
+No crees tasks.md todavía.
+No modifiques código funcional.
+```
+
+## 1.4 Validar la estructura
+
+Verifica que:
+
+- exista `proposal.md`;
+- exista al menos una spec cuando el cambio modifica comportamiento observable;
+- todavía no exista `design.md` ni `tasks.md`;
+- el proposal referencia el GitHub Issue correcto;
+- no haya código funcional modificado.
+
+Ejecuta los comandos OpenSpec con `workshop-requirements-api` como directorio de trabajo.
+
+Primero identifica el nombre exacto del cambio:
+
+```powershell
+openspec list
+```
+
+También puedes verlo como el nombre de la carpeta bajo `openspec/changes/` del repositorio `workshop-requirements-api`.
+
+Por ejemplo:
+
+```text
+openspec/changes/issue-<N>-<slug-del-hallazgo>/
+```
+
+Entonces:
+
+```text
+CHANGE_NAME = issue-<N>-<slug-del-hallazgo>
+```
+
+Con ese nombre, ejecuta o solicita evidencia de:
+
+```powershell
+openspec status --change <CHANGE_NAME>
+openspec validate <CHANGE_NAME>
+```
+
+Ejemplo:
+
+```powershell
+openspec status --change <CHANGE_NAME>
+openspec validate <CHANGE_NAME>
+```
+
+## 1.5 Gate humano
+
+Revisa proposal y specs:
+
+- ¿es el problema correcto?;
+- ¿el alcance coincide con el Issue?;
+- ¿queda explícito lo que no cambia?;
+- ¿los requisitos son verificables?;
+- ¿los escenarios protegen contratos reales?;
+- ¿no se agregó deuda secundaria?
+
+## 1.6 Integrar la etapa
+
+Si proposal y specs son correctos, registra esta etapa con un commit sobre la misma rama vinculada al Issue.
+
+Antes de commitear, revisa el diff y confirma que solo contiene los artefactos esperados de esta etapa dentro de `workshop-requirements-api`.
+
+Puedes usar GitHub Copilot en VS Code para generar el mensaje del commit a partir de los cambios staged.
+
+Ejemplo conceptual:
+
+```text
+docs(openspec): define issue 10 proposal and specs
+
+- referencia GitHub Issue #10
+- agrega proposal y specs del cambio
+- valida el change de OpenSpec
+- no modifica código funcional
+```
+
+No abras todavía un PR hacia `main`. La rama del Issue seguirá acumulando las siguientes etapas del flujo SDD.
+
+## Criterio de salida
+
+La rama integradora contiene un cambio OpenSpec válido con `proposal.md` y `specs/`, vinculado al GitHub Issue y sin implementación funcional.
+</script>
+<script type="text/plain" id="doc-STEP_2_ARCHITECTURE.md"># Paso 2 - Crear design y tasks con OpenSpec
+
+## Objetivo
+
+Convertir proposal y specs aprobados en un diseño técnico incremental y luego descomponer ese diseño en `tasks.md` usando el flujo estándar de OpenSpec.
+
+## 2.1 Partir de la rama integradora actualizada
+
+Confirma que estás trabajando sobre `<BRANCH_DEL_ISSUE>` de `workshop-requirements-api` y que el commit del Paso 1 ya contiene:
+
+```text
+openspec/changes/<CHANGE_NAME>/proposal.md
+openspec/changes/<CHANGE_NAME>/specs/
+```
+
+Continúa trabajando sobre esa misma rama. En GitHub Copilot Chat, abre el selector **Agent** y elige:
+
+```text
+Architect
+```
+
+## 2.2 Crear el design
+
+Prompt recomendado:
+
+```text
+Trabaja únicamente en workshop-requirements-api.
+No leas ni modifiques los otros repositorios del workspace.
+Todos los comandos, lecturas, cambios y operaciones Git/GitHub de este paso deben referirse únicamente a workshop-requirements-api.
+
+Trabaja sobre la rama actual <BRANCH_DEL_ISSUE>. No crees ni cambies a otra rama.
+
+Trabaja sobre el cambio OpenSpec <CHANGE_NAME> ya aprobado.
+Lee proposal.md y specs/ antes de proponer cualquier diseño.
+
+Crea o completa:
+openspec/changes/<CHANGE_NAME>/design.md
+
+El design debe incluir:
+- contexto técnico relevante;
+- goals / non-goals;
+- contratos protegidos;
+- componentes afectados;
+- decisiones técnicas y alternativas consideradas;
+- estrategia incremental;
+- pruebas de caracterización necesarias antes de modificar comportamiento crítico;
+- riesgos / trade-offs;
+- rollback cuando aplique.
+
+No implementes código funcional.
+No rediseñes toda la aplicación.
+```
+
+## 2.3 Gate humano del design
+
+Revisa:
+
+- ¿cumple las specs sin ampliar alcance?;
+- ¿protege contratos existentes?;
+- ¿explica decisiones y trade-offs?;
+- ¿identifica qué comportamiento debe caracterizarse antes de cambiar?;
+- ¿evita una reescritura innecesaria?
+
+Si una pregunta cambiaría lo que se construirá, resuélvela antes de avanzar.
+
+## 2.4 Crear `tasks.md`
+
+Una vez aprobado el design, completa el artefacto `tasks.md` del mismo cambio OpenSpec.
+
+Prompt recomendado:
+
+```text
+Trabaja únicamente en workshop-requirements-api.
+No leas ni modifiques los otros repositorios del workspace.
+Todos los comandos, lecturas, cambios y operaciones Git/GitHub de este paso deben referirse únicamente a workshop-requirements-api.
+
+Continúa sobre la rama actual <BRANCH_DEL_ISSUE>. No crees ni cambies de rama.
+
+Usa proposal.md, specs/ y design.md ya aprobados del cambio OpenSpec <CHANGE_NAME>.
+
+Genera o completa:
+openspec/changes/<CHANGE_NAME>/tasks.md
+
+Las tareas deben:
+- estar dentro del alcance del GitHub Issue;
+- ser pequeñas y verificables;
+- comenzar por las pruebas de caracterización necesarias antes del cambio funcional;
+- incluir la implementación incremental;
+- incluir pruebas/validaciones relevantes;
+- evitar trabajo secundario no aprobado.
+
+El GitHub Issue sigue siendo la unidad de trabajo del producto. tasks.md es el checklist de implementación de este cambio OpenSpec.
+
+No implementes todavía el cambio funcional.
+```
+
+## 2.5 Validar OpenSpec
+
+Ejecuta los comandos OpenSpec con `workshop-requirements-api` como directorio de trabajo.
+
+Si no recuerdas el nombre del cambio, puedes obtenerlo con:
+
+```powershell
+openspec list
+```
+
+También corresponde al nombre de la carpeta bajo:
+
+```text
+openspec/changes/
+```
+
+Con el nombre identificado, ejecuta:
+
+```powershell
+openspec status --change <CHANGE_NAME>
+openspec validate <CHANGE_NAME>
+```
+
+Comprueba que el cambio contiene:
+
+```text
+proposal.md
+specs/
+design.md
+tasks.md
+```
+
+y que está listo para `apply` según el schema `spec-driven`.
+
+## 2.6 Gate humano de tasks
+
+Revisa:
+
+- ¿cada tarea deriva del Issue, specs y design?;
+- ¿la caracterización ocurre antes de modificar comportamiento crítico?;
+- ¿las tareas son verificables?;
+- ¿no aparecen refactors o mejoras fuera de alcance?;
+- ¿el checklist permite saber qué falta durante `apply`?
+
+## 2.7 Integrar la etapa
+
+Una vez aprobados `design.md` y `tasks.md`, registra los cambios directamente en `<BRANCH_DEL_ISSUE>` de `workshop-requirements-api`.
+
+Revisa el diff y crea un commit descriptivo que deje claro que esta etapa incorpora el diseño y el plan de implementación del cambio OpenSpec. Puedes usar GitHub Copilot para proponer el mensaje del commit.
+
+Por ejemplo:
+
+```text
+docs(openspec): add design and implementation tasks
+```
+
+No abras todavía un PR hacia `main`.
+
+## Criterio de salida
+
+`<BRANCH_DEL_ISSUE>` contiene un cambio OpenSpec válido con proposal, specs, design y tasks aprobados y registrados en la propia rama del Issue. El GitHub Issue y `tasks.md` son coherentes aunque cumplan funciones de tracking distintas.
+</script>
+<script type="text/plain" id="doc-STEP_3_CHARACTERIZATION.md"># Paso 3 - Proteger el comportamiento antes de implementar
+
+## Objetivo
+
+Ejecutar primero las tareas de caracterización definidas en `tasks.md` para crear evidencia del comportamiento que debe preservarse antes de modificar una pieza crítica.
+
+## 3.1 Partir de la rama integradora actualizada
+
+Confirma que estás trabajando sobre `<BRANCH_DEL_ISSUE>` de `workshop-requirements-api` y que el cambio OpenSpec ubicado en:
+
+```text
+openspec/changes/<CHANGE_NAME>/
+```
+
+contiene:
+
+```text
+proposal.md
+specs/
+design.md
+tasks.md
+```
+
+Valida además que el cambio sigue siendo válido, ejecutando OpenSpec con `workshop-requirements-api` como directorio de trabajo:
+
+```powershell
+openspec validate <CHANGE_NAME>
+```
+
+Continúa trabajando sobre la misma rama del Issue. No crees ni cambies a otra rama para esta etapa.
+
+En GitHub Copilot Chat, abre el selector **Agent** y elige:
+
+```text
+Developer
+```
+
+## 3.2 Prompt recomendado
+
+```text
+Trabaja únicamente en workshop-requirements-api.
+No leas ni modifiques los otros repositorios del workspace.
+Todos los comandos, lecturas, cambios y operaciones Git/GitHub de este paso deben referirse únicamente a workshop-requirements-api.
+
+Trabaja sobre la rama actual vinculada al GitHub Issue. No crees ni cambies de rama.
+
+Lee el GitHub Issue y el cambio OpenSpec <CHANGE_NAME> completo:
+- proposal.md;
+- specs/;
+- design.md;
+- tasks.md.
+
+Todavía no implementes el cambio funcional.
+
+Ejecuta únicamente las tareas de tasks.md relacionadas con caracterización y protección del comportamiento existente.
+
+Antes de crear pruebas nuevas, revisa docs/TESTING.md (Dia 1): reutiliza las
+que ya protegen el comportamiento y agrega solo las que falten.
+
+Crea las pruebas de caracterización necesarias y ejecútalas.
+
+Reglas:
+- no corrijas todavía el problema objeto del Issue;
+- no cambies contratos HTTP;
+- no amplíes cobertura fuera del scope;
+- explica qué requisito o comportamiento protege cada prueba;
+- registra el comando ejecutado y su resultado;
+- actualiza en tasks.md únicamente las tareas de caracterización realmente completadas;
+- si una prueba demuestra que proposal, specs, design o tasks eran incorrectos, detente y solicita revisión.
+```
+
+> En esta etapa el Developer puede modificar únicamente las pruebas necesarias y `tasks.md` dentro de `workshop-requirements-api`. Puede ejecutar la suite para obtener una línea base reproducible, pero todavía no debe modificar código funcional.
+
+En PowerShell, si el proyecto necesita agregar la raíz del repositorio al path de imports, ejecuta el comando con `workshop-requirements-api` como directorio de trabajo, por ejemplo:
+
+```powershell
+$env:PYTHONPATH='.'; python -m pytest tests/test_api.py -q
+```
+
+Un error de entorno o de invocación del comando no equivale a un fallo del comportamiento caracterizado. Corrige primero el entorno y vuelve a ejecutar la misma batería de pruebas antes de sacar conclusiones sobre el código.
+
+## 3.3 Relación con OpenSpec
+
+En una aplicación brownfield, OpenSpec define el cambio, pero antes de aplicar tareas funcionales necesitamos proteger el comportamiento existente que podría verse afectado. Por eso este laboratorio introduce un gate de characterization tests antes del cambio funcional.
+
+```text
+spec
+= comportamiento requerido
+
+design
+= estrategia técnica
+
+tasks.md
+= plan/checklist aprobado
+
+characterization test
+= evidencia ejecutable del comportamiento existente que debemos proteger
+```
+
+Las pruebas de caracterización forman parte de la ejecución del plan, pero se separan como gate brownfield antes del cambio funcional.
+
+## 3.4 Evidencia esperada
+
+La sesión debe dejar evidencia de:
+
+```text
+comando ejecutado
+resultado
+número de tests relevantes
+spec/requisito relacionado
+tarea de tasks.md relacionada
+comportamiento protegido
+```
+
+## 3.5 Integrar la etapa
+
+Una vez que las pruebas de caracterización pasan y `tasks.md` refleja únicamente las tareas realmente completadas, revisa el diff antes de registrar los cambios.
+
+Confirma que:
+
+- solo se modificaron pruebas necesarias para caracterizar el baseline y `tasks.md` dentro de `workshop-requirements-api`;
+- no se modificó código funcional;
+- las pruebas ejecutadas pasan sobre el comportamiento actual;
+- las tareas futuras que todavía no corresponden al baseline permanecen pendientes.
+
+Registra la etapa directamente en `<BRANCH_DEL_ISSUE>` con un commit descriptivo. Puedes usar GitHub Copilot para proponer el mensaje del commit.
+
+Por ejemplo:
+
+```text
+test: characterize current <comportamiento-protegido> behavior
+```
+
+El commit debe incluir las pruebas de caracterización y la actualización correspondiente de `tasks.md`.
+
+No abras todavía un PR hacia `main`.
+
+## Criterio de salida
+
+`<BRANCH_DEL_ISSUE>` contiene proposal, specs, design y tasks aprobados, con las tareas de caracterización realmente verificadas marcadas como completadas y una red de seguridad reproducible antes del cambio funcional.
+</script>
+<script type="text/plain" id="doc-STEP_4_IMPLEMENT.md"># Paso 4 - Implementar con OpenSpec apply + GitHub Issue
+
+## Objetivo
+
+Implementar únicamente el GitHub Issue aprobado usando el cambio OpenSpec completo y `tasks.md` como checklist de ejecución.
+
+## 4.1 Partir de la rama integradora actualizada
+
+Confirma que estás trabajando sobre `<BRANCH_DEL_ISSUE>` de `workshop-requirements-api` y que allí existen:
+
+- OpenSpec proposal aprobado;
+- OpenSpec specs aprobadas;
+- OpenSpec design aprobado;
+- OpenSpec tasks aprobado;
+- tareas de caracterización completadas;
+- baseline conocido.
+
+Continúa trabajando sobre la misma rama del Issue. No crees ni cambies a otra rama para esta etapa.
+
+En GitHub Copilot Chat, abre el selector **Agent** y elige:
+
+```text
+Developer
+```
+
+## 4.2 Prompt recomendado
+
+```text
+Trabaja únicamente en workshop-requirements-api.
+No leas ni modifiques los otros repositorios del workspace.
+Todos los comandos, lecturas, cambios y operaciones Git/GitHub de este paso deben referirse únicamente a workshop-requirements-api.
+
+Trabaja sobre la rama actual vinculada al GitHub Issue. No crees ni cambies de rama.
+
+Implementa el GitHub Issue seleccionado utilizando el cambio OpenSpec <CHANGE_NAME> como definición y plan aprobados.
+
+Fuentes de verdad:
+1. GitHub Issue aprobado;
+2. openspec/changes/<CHANGE_NAME>/proposal.md;
+3. openspec/changes/<CHANGE_NAME>/specs/;
+4. openspec/changes/<CHANGE_NAME>/design.md;
+5. openspec/changes/<CHANGE_NAME>/tasks.md;
+6. pruebas de caracterización existentes y su baseline.
+
+Usa el workflow OpenSpec apply disponible para GitHub Copilot.
+
+Reglas:
+- implementa siguiendo las tareas pendientes de tasks.md;
+- marca una tarea como completada solo cuando exista evidencia de que terminó;
+- no amplíes el scope fuera del Issue y OpenSpec;
+- no cambies contratos fuera del alcance;
+- no resuelvas hallazgos secundarios;
+- no desactives tests ni controles;
+- realiza cambios pequeños;
+- ejecuta las pruebas relevantes después de cada cambio significativo;
+- registra comandos y resultados;
+- detente si implementación, spec, design y tasks entran en conflicto.
+```
+
+## 4.3 Qué significa `apply`
+
+En el recorrido principal usamos el schema estándar `spec-driven`:
+
+```text
+proposal -> specs -> design -> tasks -> apply
+```
+
+Durante `apply`, OpenSpec guía la implementación a partir de los artefactos aprobados y del estado de `tasks.md`.
+
+GitHub conserva, en paralelo:
+
+```text
+Issue   = unidad de trabajo y trazabilidad del producto
+Project = prioridad y coordinación
+PR      = revisión e integración
+```
+
+## 4.4 Validación
+
+El agente debe ejecutar, con `workshop-requirements-api` como directorio de trabajo y según corresponda al repositorio real:
+
+- tests de caracterización;
+- tests del cambio;
+- build/lint disponibles;
+- pruebas HTTP relevantes;
+- `openspec validate <CHANGE_NAME>` si los artefactos OpenSpec fueron modificados.
+
+Antes de cerrar la etapa revisa `tasks.md`: cualquier checkbox marcado debe corresponder a trabajo realmente ejecutado y validado.
+
+## 4.5 Integrar la etapa
+
+Antes de registrar los cambios, revisa:
+
+- el diff de implementación dentro de `workshop-requirements-api`;
+- `tasks.md` y el estado real de cada checkbox;
+- las pruebas ejecutadas y sus resultados;
+- que cada tarea marcada como completada tenga evidencia;
+- que no existan cambios fuera del alcance aprobado.
+
+Registra los cambios directamente en `<BRANCH_DEL_ISSUE>` con un commit descriptivo. Puedes usar GitHub Copilot para proponer el mensaje del commit.
+
+Por ejemplo:
+
+```text
+feat: implement approved <CHANGE_NAME> change
+```
+
+El commit debe incluir la implementación validada y la actualización correspondiente de `tasks.md`.
+
+No abras todavía el PR final hacia `main`; ese paso corresponde al Step 5.
+
+## Criterio de salida
+
+`<BRANCH_DEL_ISSUE>` contiene la implementación aprobada del GitHub Issue, satisface las specs OpenSpec relevantes, refleja correctamente el progreso en `tasks.md` y mantiene pruebas reproducibles en verde según el baseline esperado.
+</script>
+<script type="text/plain" id="doc-STEP_5_PR_CI.md"># Paso 5 - Preparar Pull Request final y revisar quality gates
+
+## Objetivo
+
+Cerrar el ciclo guiado con evidencia suficiente para una revisión independiente y con un Pull Request final desde la rama del Issue hacia `main`.
+
+## 5.1 Confirmar la rama del Issue
+
+Confirma que estás trabajando sobre `<BRANCH_DEL_ISSUE>` de `workshop-requirements-api` y que allí existen:
+
+- `proposal.md` aprobado;
+- `specs/` aprobadas;
+- `design.md` aprobado;
+- `tasks.md` actualizado;
+- pruebas de caracterización;
+- implementación del Issue;
+- evidencia de pruebas relevantes.
+
+Valida además el cambio OpenSpec con `workshop-requirements-api` como directorio de trabajo:
+
+```powershell
+openspec validate <CHANGE_NAME>
+```
+
+Revisa `tasks.md`: no debe haber tareas marcadas como completas sin evidencia. Si quedan tareas pendientes, determina si bloquean el cierre o si el alcance debe volver a revisión.
+
+## 5.2 Preparar el contenido del PR
+
+Si trabajas desde el workspace multi-repo, limita explícitamente el contexto al repositorio objetivo:
+
+```text
+Trabaja únicamente en workshop-requirements-api.
+No leas ni modifiques los otros repositorios del workspace.
+```
+
+En GitHub Copilot Chat, abre el selector **Agent**, elige `Developer` y usa un prompt como el siguiente:
+
+```text
+Trabaja únicamente en workshop-requirements-api.
+No leas ni modifiques los otros repositorios del workspace.
+Todos los comandos, lecturas, cambios y operaciones Git/GitHub de este paso deben referirse únicamente a workshop-requirements-api.
+
+Prepara el Pull Request final del GitHub Issue desde la rama actual <BRANCH_DEL_ISSUE> hacia main.
+
+Usa únicamente evidencia existente en:
+- el GitHub Issue;
+- openspec/changes/<CHANGE_NAME>/proposal.md;
+- openspec/changes/<CHANGE_NAME>/specs/;
+- openspec/changes/<CHANGE_NAME>/design.md;
+- openspec/changes/<CHANGE_NAME>/tasks.md;
+- diff acumulado;
+- pruebas ejecutadas.
+
+Antes de preparar el PR:
+- verifica que estás trabajando con <BRANCH_DEL_ISSUE>;
+- revisa que tasks.md refleje el trabajo realmente completado;
+- revisa el diff acumulado;
+- confirma que las pruebas relevantes tienen evidencia.
+
+Prepara:
+- título;
+- descripción;
+- Issue relacionado;
+- cambio OpenSpec relacionado;
+- estado de tasks.md;
+- comportamiento protegido;
+- cambios realizados;
+- pruebas ejecutadas y resultados;
+- trade-offs;
+- riesgos residuales;
+- rollback;
+- trabajo fuera de alcance.
+
+No crees ramas adicionales.
+No modifiques el código en esta etapa.
+```
+
+El objetivo de este paso es preparar un PR auditable a partir de evidencia existente, no volver a implementar el cambio.
+
+## 5.3 Crear el PR final
+
+El Pull Request final propone integrar todo el trabajo del Issue desde `<BRANCH_DEL_ISSUE>` hacia `main`.
+
+En GitHub, la dirección debe ser:
+
+```text
+base: main
+compare: <BRANCH_DEL_ISSUE>
+```
+
+Donde:
+
+```text
+base    = rama destino
+compare = rama que contiene los cambios
+```
+
+Antes de crear el PR revisa:
+
+- commits incluidos;
+- archivos modificados;
+- diff acumulado;
+- que no haya cambios fuera del Issue;
+- que `tasks.md` refleje el estado real;
+- que las pruebas relevantes tengan evidencia.
+
+Usa como título y descripción el contenido preparado en el paso anterior.
+
+Si el agente dispone de acceso a GitHub mediante MCP, puede realizar la operación sobre el PR de `workshop-requirements-api`. Si la creación se hace manualmente en GitHub.com, conserva exactamente la misma dirección de ramas y revisa el diff antes de confirmar.
+
+## 5.4 Revisar trazabilidad
+
+La cadena esperada es:
+
+```text
+Discovery
+-> GitHub Issue
+-> GitHub Project
+-> rama del Issue
+-> OpenSpec proposal/specs/design/tasks
+-> characterization tests
+-> OpenSpec apply
+-> implementación
+-> PR final rama del Issue -> main
+```
+
+Comprueba que el PR final permite reconstruir esa historia sin depender de información implícita.
+
+## 5.5 Revisar checks automatizados
+
+GitHub puede ejecutar automáticamente workflows y controles ya configurados en el repositorio.
+
+En S4 no creamos ni modificamos el pipeline de CI. Revisa cada check existente como quality gate independiente.
+
+Si alguno falla:
+
+- no lo deshabilites para obtener verde;
+- identifica el workflow/control;
+- determina si el fallo fue causado por el cambio, es preexistente o corresponde a configuración del laboratorio;
+- registra el resultado como evidencia;
+- no confundas un fallo técnico del workflow con un fallo funcional sin investigar su causa.
+
+Un PR mergeado no implica automáticamente que la Definition of Done esté satisfecha.
+
+## 5.6 Definition of Done
+
+La Definition of Done es un gate de evaluación, no un paso de implementación.
+
+En GitHub Copilot Chat, abre el selector **Agent**, elige `Developer` y usa el Skill `reqflow-definition-of-done` para evaluar únicamente evidencia existente.
+
+Prompt recomendado:
+
+```text
+Trabaja únicamente en workshop-requirements-api.
+No leas ni modifiques los otros repositorios del workspace.
+Todos los comandos, lecturas y operaciones Git/GitHub de esta evaluación deben referirse únicamente a workshop-requirements-api.
+
+Usa el Skill reqflow-definition-of-done para evaluar el cambio actual.
+
+Evalúa únicamente con evidencia existente en:
+- el GitHub Issue;
+- el Pull Request final;
+- openspec/changes/<CHANGE_NAME>/proposal.md;
+- openspec/changes/<CHANGE_NAME>/specs/;
+- openspec/changes/<CHANGE_NAME>/design.md;
+- openspec/changes/<CHANGE_NAME>/tasks.md;
+- pruebas ejecutadas;
+- checks disponibles en GitHub.
+
+Para cada criterio clasifica el resultado como:
+- CUMPLIDO;
+- PENDIENTE DE OTRO GATE;
+- NO APLICA AL ALCANCE;
+- FALTA EVIDENCIA;
+- BLOQUEADO.
+
+No declares un criterio como cumplido si no existe evidencia verificable.
+No modifiques código ni archivos.
+Devuélveme una tabla con:
+criterio | estado | evidencia | observación
+```
+
+Interpreta los estados así:
+
+```text
+CUMPLIDO
+= existe evidencia suficiente
+
+FALTA EVIDENCIA
+= podría estar bien, pero no puede demostrarse
+
+BLOQUEADO
+= existe una señal concreta que impide aprobar el criterio
+
+NO APLICA AL ALCANCE
+= el criterio no corresponde al cambio evaluado
+```
+
+No conviertas ausencia de evidencia en aprobación.
+
+## 5.7 ¿Cuándo archivar OpenSpec?
+
+Mientras el cambio está activo, sus artefactos viven en:
+
+```text
+openspec/changes/<CHANGE_NAME>/
+```
+
+Archivar significa declarar que ese cambio dejó de ser trabajo activo porque fue implementado, validado e integrado. El archive también puede actualizar las specs canónicas según el workflow OpenSpec utilizado.
+
+La secuencia recomendada es:
+
+```text
+implementación terminada
+-> pruebas y quality gates revisados
+-> PR final aprobado y mergeado
+-> Definition of Done aceptada
+-> archive del cambio OpenSpec
+```
+
+No archives un cambio únicamente porque el PR exista o haya sido mergeado. Si hay gates bloqueados, tareas pendientes o falta evidencia relevante, el cambio todavía necesita revisión.
+
+El archive puede realizarse como cierre posterior del Issue o como un PR/commit de housekeeping según la política del equipo.
+
+## 5.8 Cierre conceptual: personalizar OpenSpec
+
+Este paso es únicamente de comparación conceptual. No modifiques el cambio actual ni cambies el schema activo.
+
+Compara el recorrido estándar usado en el laboratorio con el ejemplo personalizado disponible en:
+
+```text
+templates/openspec/schemas/reqflow-github/
+```
+
+El objetivo es observar que un equipo puede personalizar OpenSpec para eliminar `tasks.md` y delegar el tracking operativo a GitHub Issues.
+
+Comparación:
+
+```text
+Recorrido principal:
+proposal -> specs -> design -> tasks -> apply
+                 + GitHub Issue
+
+Alternativa personalizada:
+proposal -> specs -> design -> apply
+                 + GitHub Issue como tracking
+```
+
+La segunda opción puede evitar duplicación en un equipo real, pero se presenta **después** de aprender el flujo estándar completo. Cambia el proceso de trabajo, no la funcionalidad de ReqFlow.
+
+## Criterio de salida
+
+Existe un PR auditable desde `<BRANCH_DEL_ISSUE>` hacia `main`, conectado a un GitHub Issue y respaldado por proposal, specs, design, tasks, pruebas y quality gates revisados. El participante además puede explicar cómo OpenSpec podría personalizarse posteriormente para delegar el tracking en GitHub Issues.
+</script>
+<script type="text/plain" id="doc-GITHUB_COPILOT_AGENTS.md"># Ejecución alternativa desde GitHub Copilot Agents
+
+El flujo principal de S4 se ejecuta desde **VS Code**, abriendo `reqflow-workspace` y limitando cada prompt y operación al repositorio `workshop-requirements-api`.
+
+Como alternativa, aquellas tareas cuyo contexto ya esté versionado en GitHub pueden delegarse a **GitHub Copilot Agents** desde GitHub.com.
+
+Esta alternativa no reemplaza el recorrido principal ni los pasos que dependen explícitamente de la CLI de OpenSpec.
+
+## Qué cambia al ejecutar desde GitHub
+
+### 1. Los Custom Agents deben estar disponibles en la rama por defecto
+
+Los Custom Agents que se quieran utilizar desde GitHub deben estar versionados en el repositorio y disponibles desde la rama por defecto, normalmente `main`.
+
+Por ejemplo:
+
+```text
+.github/
+└── agents/
+    ├── pm-po.agent.md
+    ├── architect.agent.md
+    ├── developer.agent.md
+    └── discovery.agent.md
+```
+
+Esto es diferente del trabajo local sobre una rama de laboratorio: GitHub necesita poder descubrir las definiciones de los agentes desde el repositorio.
+
+### 2. GitHub Copilot trabaja sobre su propia rama `copilot/*`
+
+Al iniciar una tarea desde GitHub Copilot Agent se crea una rama de trabajo administrada por la sesión, normalmente con el prefijo:
+
+```text
+copilot/...
+```
+
+Por ejemplo:
+
+```text
+<BASE_BRANCH>
+   \
+    copilot/implement-validation-rule
+```
+
+Por tanto, un prompt pensado para GitHub Copilot Agent **no debe pedir** que el agente cree o cambie de rama mediante instrucciones como:
+
+```text
+git checkout -b feature/...
+git checkout ...
+git switch ...
+```
+
+El agente debe trabajar sobre la rama proporcionada por la sesión.
+
+### 3. La rama base sigue siendo una decisión del flujo
+
+La existencia de los agentes en `main` no significa que todas las implementaciones deban partir de `main`.
+
+Al iniciar una tarea se debe seleccionar la rama base que corresponda al flujo que se está ejecutando.
+
+Conceptualmente:
+
+```text
+<BASE_BRANCH>
+   \
+    copilot/<task>
+             |
+             └── Pull Request -> <BASE_BRANCH>
+```
+
+Por tanto, hay que distinguir entre:
+
+```text
+main
+└── rama desde la que GitHub puede descubrir agentes e instrucciones versionadas
+
+<BASE_BRANCH>
+└── rama seleccionada como punto de partida de una tarea concreta
+```
+
+### 4. Cada tarea se ejecuta sobre un repositorio concreto
+
+En VS Code, `reqflow-workspace` proporciona contexto sobre varios repositorios:
+
+```text
+workshop-requirements-api
+workshop-auth-backend
+workshop-login-frontend
+```
+
+Desde GitHub Copilot Agents, cada tarea se inicia sobre un repositorio concreto.
+
+Por ejemplo:
+
+```text
+Task A -> workshop-requirements-api
+Task B -> workshop-auth-backend
+Task C -> workshop-login-frontend
+```
+
+El prompt debe asumir ese límite y no intentar modificar otros repositorios del producto.
+
+### 5. El contexto necesario debe estar versionado
+
+Para que el agente pueda tomar una tarea desde GitHub, las fuentes de contexto que necesite deben estar disponibles en el repositorio, por ejemplo:
+
+```text
+openspec/
+docs/
+.github/
+  agents/
+  copilot-instructions.md
+AGENTS.md
+```
+
+Las especificaciones, decisiones de arquitectura e instrucciones relevantes deben formar parte del contexto versionado que el agente pueda leer.
+
+### 6. Los comandos explícitos de OpenSpec permanecen en local
+
+Los pasos del laboratorio que requieren ejecutar comandos como:
+
+```powershell
+openspec list
+openspec status --change <CHANGE_NAME>
+openspec validate <CHANGE_NAME>
+```
+
+siguen ejecutándose desde VS Code con `workshop-requirements-api` como directorio de trabajo.
+
+Una vez que los artefactos resultantes están versionados, las tareas posteriores que ya dispongan de suficiente contexto pueden delegarse a GitHub Copilot Agents.
+
+Conceptualmente:
+
+```text
+VS Code
+   |
+   +--> OpenSpec CLI
+   |
+   +--> artefactos versionados
+              |
+              v
+           GitHub
+              |
+              +--> Copilot Agent
+              |
+              +--> copilot/*
+              |
+              +--> implementación
+              |
+              +--> Pull Request
+```
+
+## Ejemplo práctico
+
+Supongamos que el cambio OpenSpec ya está definido y versionado en `workshop-requirements-api`, y queremos delegar una tarea de implementación desde GitHub.
+
+Al iniciar la tarea se selecciona:
+
+```text
+Repository: workshop-requirements-api
+Base branch: <BASE_BRANCH>
+Custom Agent: Developer
+```
+
+GitHub Copilot creará su propia rama de trabajo, por ejemplo:
+
+```text
+<BASE_BRANCH>
+   \
+    copilot/implement-validation-rule
+```
+
+Prompt de ejemplo:
+
+```text
+Trabaja únicamente en workshop-requirements-api.
+
+Implementa la funcionalidad descrita en el GitHub Issue y en el cambio OpenSpec disponible en este repositorio.
+
+Antes de realizar cambios:
+
+1. Revisa las instrucciones disponibles en el repositorio.
+2. Lee el GitHub Issue asociado a la tarea.
+3. Identifica y lee el cambio OpenSpec relacionado: proposal, specs, design y tasks.
+4. Revisa la arquitectura y los ADRs relevantes.
+5. Analiza la implementación existente antes de modificar código.
+
+Durante la implementación:
+
+- Trabaja únicamente en este repositorio.
+- Utiliza la rama proporcionada por la sesión de GitHub Copilot.
+- No crees nuevas ramas.
+- No ejecutes git checkout, git switch ni cambies de rama.
+- Mantén la implementación alineada con proposal, specs, design y tasks aprobados.
+- Implementa únicamente el alcance comprometido en el GitHub Issue.
+- Agrega o actualiza las pruebas necesarias.
+- No modifiques archivos que no estén relacionados con la tarea.
+
+Al finalizar:
+
+1. Ejecuta las validaciones y pruebas disponibles que no dependan de herramientas ausentes en el entorno del agente.
+2. Comprueba que los cambios correspondan únicamente al alcance solicitado.
+3. Resume los archivos modificados y las pruebas ejecutadas.
+4. Indica cualquier supuesto, limitación o decisión técnica tomada.
+5. Deja los cambios listos para revisión mediante Pull Request.
+```
+
+## Diferencia principal
+
+```text
+VS Code
+Prompt + workspace + herramientas locales + control explícito de Git
+
+GitHub Copilot Agent
+Prompt + repositorio + rama base
+                 |
+                 v
+            copilot/*
+                 |
+                 v
+                PR
+```
+
+GitHub Copilot Agents es, por tanto, una **alternativa de ejecución para tareas cuyo contexto ya está suficientemente definido y versionado**, mientras que VS Code continúa siendo el flujo principal del laboratorio y el entorno natural para las operaciones explícitas de OpenSpec.
+</script><script>const allowed=["README.md","STEP_0_OPENSPEC.md","STEP_1_SPEC.md","STEP_2_ARCHITECTURE.md","STEP_3_CHARACTERIZATION.md","STEP_4_IMPLEMENT.md","STEP_5_PR_CI.md","GITHUB_COPILOT_AGENTS.md"];const q=new URLSearchParams(location.search).get('file');const f=allowed.includes(q)?q:allowed[0];document.getElementById('file-name').textContent=f;const src=document.getElementById('doc-'+f);const out=document.getElementById('content');out.innerHTML=marked.parse(src.textContent);out.querySelectorAll('a[href]').forEach(a=>{const h=a.getAttribute('href');if(allowed.includes(h))a.setAttribute('href','?file='+encodeURIComponent(h));});</script></body></html>
