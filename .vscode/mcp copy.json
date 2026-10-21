@@ -1,8 +1,0 @@
-{
-  "servers": {
-    "github-local": {
-      "type": "http",
-      "url": "http://localhost:8081/mcp"
-    }
-  }
-}
