@@ -1,61 +1,38 @@
-package com.bcp.workshop.auth;
+// Integrar en el AuthResource existente; conservar sus anotaciones de clase
+// y el mecanismo vigente de autenticación de credenciales.
+@Inject
+AuthService authService;
 
-import jakarta.inject.Inject;
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
-import org.apache.commons.text.StringEscapeUtils;
+@Inject
+TokenService tokenService;
 
-import java.util.HashMap;
-import java.util.Map;
-
-@Path("/auth")
+@POST
+@Path("/login")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-public class AuthResource {
-    @Inject
-    LegacyDatabase database;
-
-    @POST
-    @Path("/login")
-    public Response login(LoginRequest request) {
-        try {
-            if (request == null) {
-                return Response.status(400).entity(Map.of("message", "Request is null")).build();
-            } else {
-                if (request.username == null || request.username.trim().isEmpty()) {
-                    return Response.status(400).entity(Map.of("message", "Username is required")).build();
-                } else {
-                    if (request.password == null || request.password.trim().isEmpty()) {
-                        return Response.status(400).entity(Map.of("message", "Password is required")).build();
-                    } else {
-                        UserRecord user = database.findByCredentials(request.username, request.password);
-                        if (user == null) {
-                            return Response.status(401).entity(Map.of("message", "Invalid user " + request.username + " or password")).build();
-                        } else {
-                            String token = LegacyTokenUtil.create(user.username(), user.role());
-                            Map<String, Object> response = new HashMap<>();
-                            response.put("token", token);
-                            response.put("expiresIn", 3600);
-                            response.put("user", Map.of(
-                                    "username", user.username(),
-                                    "displayName", StringEscapeUtils.escapeHtml4(user.displayName()),
-                                    "role", user.role()
-                            ));
-                            response.put("debug", "authenticated-with-legacy-flow");
-                            return Response.ok(response).build();
-                        }
-                    }
-                }
-            }
-        } catch (Exception error) {
-            return Response.status(500).entity(Map.of(
-                    "message", error.getMessage() == null ? "Unknown error" : error.getMessage(),
-                    "exception", error.getClass().getName()
-            )).build();
-        }
+public Response login(LoginRequest request) {
+    if (!LoginRequestValidator.isValid(request)) {
+        return Response.status(Response.Status.BAD_REQUEST)
+                .entity(new LoginError("Invalid login request"))
+                .build();
     }
+
+    // Este método debe conservar el acceso a datos y la verificación de
+    // contraseña existentes. No se consulta ni modifica el esquema.
+    UserRecord user = authService.authenticate(request.username, request.password);
+    if (user == null) {
+        return Response.status(Response.Status.UNAUTHORIZED)
+                .entity(new LoginError("Invalid credentials"))
+                .build();
+    }
+
+    TokenService.IssuedToken issued =
+            tokenService.issue(user.username(), request.client);
+
+    return Response.ok(new LoginResponse(
+            issued.token(),
+            issued.expiresIn(),
+            LoginResponse.User.from(user))).build();
 }
+
+public record LoginError(String message) {}
